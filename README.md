@@ -125,3 +125,4 @@ They exist because repetitive tasks are the biggest time sink in IT Support — 
 ---
 
 *Part of my [IT Support homelab project](../homelab-docs). See also: [it-runbooks](../it-runbooks).*
+# helpdesk-scripts
