@@ -7,16 +7,36 @@ import sys
 import os
 from datetime import datetime
 
-# ── Default CSV file if none provided ──────────────────────────────────────
-DEFAULT_FILE = "tickets.csv"
+# ── Built-in sample data (used when no CSV file is provided) ──────────────
+SAMPLE_CSV = """ticket_id,title,priority,status,category,created,resolved
+TKT-001,User cannot log in - account locked,P2,Resolved,Access Control,2026-03-17,2026-03-17
+TKT-002,Mapped drive not appearing for new starter,P3,Resolved,Active Directory,2026-03-17,2026-03-17
+TKT-003,Password reset request - HR staff,P3,Resolved,Access Control,2026-03-17,2026-03-17
+TKT-004,DNS resolution failing on CLIENT01,P2,In Progress,Network,2026-03-17,
+TKT-005,High CPU alert on DC01,P1,Resolved,Server,2026-03-17,2026-03-17
+TKT-006,Outlook not syncing - executive PA,P2,Open,Email,2026-03-17,
+TKT-007,New starter onboarding - Finance dept,P3,Resolved,Access Control,2026-03-17,2026-03-17
+TKT-008,Printer queue stuck on 2nd floor MFP,P3,In Progress,Hardware,2026-03-17,
+TKT-009,VPN connection dropping intermittently,P2,Open,Network,2026-03-17,
+TKT-010,Shared mailbox access request - Legal,P3,Resolved,Email,2026-03-17,2026-03-17
+""".strip()
 
-def load_tickets(filepath):
-    """Read tickets from CSV file and return as list of dicts."""
+def load_tickets_from_file(filepath):
+    """Read tickets from a CSV file and return as list of dicts."""
     tickets = []
     with open(filepath, newline='', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
             tickets.append(row)
+    return tickets
+
+def load_tickets_from_string(csv_string):
+    """Read tickets from a CSV string and return as list of dicts."""
+    import io
+    tickets = []
+    reader = csv.DictReader(io.StringIO(csv_string))
+    for row in reader:
+        tickets.append(row)
     return tickets
 
 def generate_report(tickets, source_file):
@@ -81,16 +101,22 @@ def generate_report(tickets, source_file):
     return "\n".join(lines)
 
 def main():
-    # Use argument or default file
-    filepath = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_FILE
+    if len(sys.argv) > 1:
+        # Use CSV file passed as argument
+        filepath = sys.argv[1]
+        if not os.path.exists(filepath):
+            print(f"ERROR: Cannot find ticket file: {filepath}")
+            print("Usage: python incident_log_reporter.py [tickets.csv]")
+            sys.exit(1)
+        tickets = load_tickets_from_file(filepath)
+        source  = filepath
+    else:
+        # Use built-in sample data
+        print("  No CSV file provided — using built-in sample data.\n")
+        tickets = load_tickets_from_string(SAMPLE_CSV)
+        source  = "built-in sample data"
 
-    if not os.path.exists(filepath):
-        print(f"ERROR: Cannot find ticket file: {filepath}")
-        print("Usage: python incident_log_reporter.py tickets.csv")
-        sys.exit(1)
-
-    tickets = load_tickets(filepath)
-    report  = generate_report(tickets, filepath)
+    report = generate_report(tickets, source)
 
     # Print to screen
     print(report)
