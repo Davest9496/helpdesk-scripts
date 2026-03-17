@@ -12,6 +12,7 @@ Built and tested in a Windows Server 2022 / Active Directory homelab (UTM on mac
 | `active-directory/onboard-user.ps1` | PowerShell | Create AD user, assign to OU and security groups, set temp password, log actions |
 | `active-directory/offboard-user.ps1` | PowerShell | Disable account, strip group memberships, move to Disabled OU, update description for audit trail |
 | `system-maintenance/system-health-check.py` | Python | Check CPU, memory, disk, and network connectivity — human-readable or JSON output |
+| `incident-log-reporter/incident_log_reporter.py` | Python | Parse helpdesk incident CSVs and generate summary reports by category, priority, and resolution time |
 
 ---
 
@@ -109,7 +110,7 @@ Sample output:
 These scripts were developed and tested in:
 
 - **DC01** — Windows Server 2022 (Domain Controller: AD DS, DNS, DHCP)
-- **CLIENT01** — Windows 10 (domain-joined client)
+- **CLIENT01** — Windows 11 (domain-joined client)
 - **SRV-UBUNTU** — Ubuntu Server 22.04 (osTicket, monitoring)
 - **Host** — macOS + UTM (VM hypervisor)
 
@@ -125,4 +126,3 @@ They exist because repetitive tasks are the biggest time sink in IT Support — 
 ---
 
 *Part of my [IT Support homelab project](../homelab-docs). See also: [it-runbooks](../it-runbooks).*
-# helpdesk-scripts
